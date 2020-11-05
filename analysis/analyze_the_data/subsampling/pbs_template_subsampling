@@ -1,0 +1,84 @@
+#!/bin/bash
+#PBS -N subsampling
+#PBS -e QQQ.stderr
+#PBS -o QQQ.stdout
+#PBS -l nodes=1:ppn=20,mem=220gb,walltime=72:00:00
+
+set -euo pipefail
+
+echo "Started at `date`"
+
+# Useful paths
+BISCUIT="installed_packages/biscuit-release-0.3.16.20200420"
+WORKDIR="2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis/analyze_the_data/subsampling"
+DIRLOC="2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis/align"
+REFLOC="references/biscuit_gencode_rel32_p13_all"
+ASSETS="installed_packages/biscuit-release-0.3.16.20200420/hg38"
+
+# Init some variables
+NTHREADS=20
+NREADS=150000000
+RCOUNT=$(samtools view -F 0x4 -q 40 -c ${DIRLOC}/QQQ.sorted.markdup.bam)
+SAMFRC=$(perl -E "say $NREADS/$RCOUNT")
+
+>&2 echo "Fraction of reads to subsample: ${SAMFRC}"
+
+# Change to working directory
+cd ${WORKDIR}
+
+# Create, sort, and index subsampled BAM
+samtools view -hbu -F 0x4 -q 40 ${DIRLOC}/QQQ.sorted.markdup.bam | \
+samtools view -hbu -s "${SAMFRC}" - | \
+samtools sort -@ "${NTHREADS}" -m 5G -o QQQ.subsampled.sorted.markdup.bam -O BAM -
+samtools index -@ "${NTHREADS}" QQQ.subsampled.sorted.markdup.bam
+
+# biscuit pileup
+${BISCUIT}/biscuit pileup -q "${NTHREADS}" \
+    ${REFLOC}/GRCh38.p13.genome.fa \
+    QQQ.subsampled.sorted.markdup.bam | \
+bgzip > QQQ.subsampled.pileup.vcf.gz
+tabix -p vcf QQQ.subsampled.pileup.vcf.gz
+
+# biscuit cg vcf2bed
+${BISCUIT}/biscuit vcf2bed -t cg \
+    QQQ.subsampled.pileup.vcf.gz | \
+bedtools sort -i - | \
+${BISCUIT}/biscuit mergecg \
+    ${REFLOC}/GRCh38.p13.genome.fa - | \
+gzip > QQQ.subsampled.cg.sorted.mergecg.bed.gz
+
+# Find average beta value across 100kb bins
+bedtools map \
+    -a ${DIRLOC}/../../qc_assets/100kb_hg38_windows.bed \
+    -b QQQ.subsampled.cg.sorted.mergecg.bed.gz \
+    -c 4 -o mean |
+gzip > QQQ.subsampled.cg.sorted.mergecg.100kb_meth_avg.bed.gz
+
+# Launch qc
+${BISCUIT}/scripts/QC.sh \
+    -v QQQ.subsampled.pileup.vcf.gz \
+    -o QQQ_QC \
+    ${ASSETS} \
+    ${REFLOC}/GRCh38.p13.genome.fa \
+    QQQ \
+    QQQ.subsampled.sorted.markdup.bam
+
+samtools flagstat -@ "${NTHREADS}" \
+    QQQ.subsampled.sorted.markdup.bam \
+    > QQQ.subsampled.sorted.markdup.bam.flagstat
+
+samtools stats -@ "${NTHREADS}" \
+    QQQ.subsampled.sorted.markdup.bam \
+    > QQQ.subsampled.sorted.markdup.bam.stat
+
+preseq \
+    c_curve -B -P -v -o QQQ.complex.ccurve.txt \
+    QQQ.subsampled.sorted.markdup.bam
+
+bash ${DIRLOC}/../cpg_counter.sh \
+    -o cpg_covg \
+    ${DIRLOC}/../../qc_assets/hg38 \
+    QQQ \
+    QQQ.subsampled.sorted.markdup.bam
+
+echo "Ended at `date`"

@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -N preseq
+#PBS -l walltime=24:00:00,nodes=1:ppn=1,mem=100gb
+#PBS -o QQQ.stdout
+#PBS -e QQQ.stderr
+
+DIRLOC=2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis
+
+cd ${DIRLOC}/preseq
+
+preseq \
+    c_curve -B -P -v -o QQQ.complex.ccurve.txt \
+    ${DIRLOC}/align/QQQ.sorted.markdup.bam
