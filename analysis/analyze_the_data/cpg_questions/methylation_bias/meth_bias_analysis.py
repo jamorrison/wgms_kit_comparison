@@ -56,6 +56,12 @@ def make_diff_avg_pt_density_plot(x_vals, y_vals, title, xlab, ylab, figname):
 
     Returns: 
     """
+    x_out = []
+    y_out = []
+    for i in range(len(x_vals)):
+        if abs(x_vals[i]) > 0.5 and abs(y_vals[i]) > 0.5:
+            x_out.append(x_vals[i])
+            y_out.append(y_vals[i])
     xs = np.array(x_vals)
     ys = np.array(y_vals)
     nbins = 100
@@ -70,18 +76,30 @@ def make_diff_avg_pt_density_plot(x_vals, y_vals, title, xlab, ylab, figname):
         k = gaussian_kde(np.vstack([xs, ys]))
     xi, yi = np.mgrid[xs.min():xs.max():nbins*1j, ys.min():ys.max():nbins*1j]
     zi = k(np.vstack([xi.flatten(), yi.flatten()]))
-        
-    im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r)
+
+    #im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r)
+    im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r,
+                        norm=colors.LogNorm(vmin=0.001, vmax=zi.max()))
     ax.contour(xi, yi, zi.reshape(xi.shape), cmap=plt.cm.viridis)
+
+    plt.plot(x_out, y_out, 'xr')#, markersize=5)
+
+    tick_loc = [i for i in np.arange(-1, 1.2, 0.2)]
+    tick_lab = []
+    for i in np.arange(-1, 1.2, 0.2):
+        if abs(i) > 0.01:
+            tick_lab.append('{:.1f}'.format(i))
+        else:
+            tick_lab.append('{:.1f}'.format(abs(i)))
 
     plt.xlim(-1.05, 1.05)
     plt.ylim(-1.05, 1.05)
-    plt.xticks([i for i in np.arange(-1, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(-1, 1.2, 0.2)])
-    plt.yticks([i for i in np.arange(-1, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(-1, 1.2, 0.2)])
+    plt.xticks(tick_loc, tick_lab, fontsize=12)
+    plt.yticks(tick_loc, tick_lab, fontsize=12)
 
-    plt.title(title)
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
+    plt.title(title, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
     plt.colorbar(im, ax=ax)
 
     plt.savefig(figname, bbox_inches='tight')

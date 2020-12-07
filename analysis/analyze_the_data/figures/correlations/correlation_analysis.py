@@ -23,10 +23,15 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
     # Create arrays with NaN values removed
     xs = []
     ys = []
+    #x_out = []
+    #y_out = []
     for i in range(len(x_vals)):
         if not np.isnan(x_vals[i]) and not np.isnan(y_vals[i]):
             xs.append(x_vals[i])
             ys.append(y_vals[i])
+            #if abs(x_vals[i] - y_vals[i]) > 0.3:
+            #    x_out.append(x_vals[i])
+            #    y_out.append(y_vals[i])
     xs = np.array(xs)
     ys = np.array(ys)
 
@@ -50,14 +55,17 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
         xi, yi = np.mgrid[xs.min():xs.max():nbins*1j, ys.min():ys.max():nbins*1j]
         zi = k(np.vstack([xi.flatten(), yi.flatten()]))
         
-        #im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), cmap=plt.cm.viridis)
-        im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r)
+        #im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r)
+        im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r,
+                          norm=colors.LogNorm(vmin=0.001, vmax=zi.max()))
         ax.contour(xi, yi, zi.reshape(xi.shape), cmap=plt.cm.viridis)
 
         plt.text(
             0.5, 1.075, r'# Bins = {:,} ; $r_s$ = {:.3f}'.format(n_cpgs, coef),
             ha='center', va='center', size='x-large'
         )
+
+        #plt.plot(x_out, y_out, 'xr', markersize=5)
 
         plt.xlim(-0.05, 1.05)
         plt.ylim(-0.05, 1.15)
