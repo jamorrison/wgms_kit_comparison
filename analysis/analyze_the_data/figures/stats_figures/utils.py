@@ -119,7 +119,7 @@ def retrieve_aligned_reads(data, rev):
     for samp in data.keys():
         if samp.startswith('FtubeA'):
             dic = data[samp]['aligned_reads']
-            tot = sum([val for val in dic.values()])
+            tot = sum([val for _, val in dic.items() if _ != 'mapq_percent'])
             dat = [
                 100.0 * dic['opt_align'] / float(tot),
                 100.0 * dic['sub_align'] / float(tot),
@@ -128,7 +128,7 @@ def retrieve_aligned_reads(data, rev):
             A.append( (samp, dat, tot) )
         else:
             dic = data[samp]['aligned_reads']
-            tot = sum([val for val in dic.values()])
+            tot = sum([val for _, val in dic.items() if _ != 'mapq_percent'])
             dat = [
                 100.0 * dic['opt_align'] / float(tot),
                 100.0 * dic['sub_align'] / float(tot),

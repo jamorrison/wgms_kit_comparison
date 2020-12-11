@@ -11,7 +11,7 @@ def parse_logs_align_mapq(fname):
 
     Returns -- dictionary of aligned mapq data
     """
-    output = {'opt_align': 0, 'sub_align': 0, 'not_align': 0}
+    output = {'opt_align': 0, 'sub_align': 0, 'not_align': 0, 'mapq_percent': {}}
     with open(fname, 'r') as f:
         file_data = f.read().splitlines()[2:]
 
@@ -19,6 +19,15 @@ def parse_logs_align_mapq(fname):
         for l in file_data:
             s = l.split()
             data[s[0]] = s[1] # data[MAPQ] = number of reads
+
+        total = sum([int(cnt) for _, cnt in data.items() if _ != 'unmapped'])
+        counts = []
+        for mapq in range(61):
+            if str(mapq) in data.keys():
+                counts.append(100.0 * float(data[str(mapq)]) / total)
+            else:
+                counts.append(0)
+        output['mapq_percent'] = dict(zip(range(61), counts))
 
         for mapq, cnt in data.items():
             if mapq == 'unmapped':

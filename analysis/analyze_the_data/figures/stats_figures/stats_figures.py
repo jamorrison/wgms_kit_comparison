@@ -74,7 +74,7 @@ def cpg_region_plots(data, outdir):
         'ExonicCpGs_percent_covered_all': {
             'key1'   : 'ExonicCpGs_percent_covered',
             'key2'   : 'All',
-            'title'  : 'CpG Coverage of Exonic Regions (All Reads)',
+            'title'  : 'CpG Coverage of Exonic Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -83,7 +83,7 @@ def cpg_region_plots(data, outdir):
         'ExonicCpGs_percent_covered_q40': {
             'key1'   : 'ExonicCpGs_percent_covered',
             'key2'    : 'Q40',
-            'title'  : 'CpG Coverage of Exonic Regions (Q40 Reads)',
+            'title'  : 'CpG Coverage of Exonic Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -92,7 +92,7 @@ def cpg_region_plots(data, outdir):
         'RepeatCpGs_percent_covered_all': {
             'key1'   : 'RepeatCpGs_percent_covered',
             'key2'   : 'All',
-            'title'  : 'CpG Coverage of Repeat-Masked Regions (All Reads)',
+            'title'  : 'CpG Coverage of Repeat-Masked Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -101,7 +101,7 @@ def cpg_region_plots(data, outdir):
         'RepeatCpGs_percent_covered_q40': {
             'key1'   : 'RepeatCpGs_percent_covered',
             'key2'   : 'Q40',
-            'title'  : 'CpG Coverage of Repeat-Masked Regions (Q40 Reads)',
+            'title'  : 'CpG Coverage of Repeat-Masked Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -110,7 +110,7 @@ def cpg_region_plots(data, outdir):
         'GenicCpGs_percent_covered_all': {
             'key1'   : 'GenicCpGs_percent_covered',
             'key2'   : 'All',
-            'title'  : 'CpG Coverage of Genic Regions (All Reads)',
+            'title'  : 'CpG Coverage of Genic Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -119,7 +119,7 @@ def cpg_region_plots(data, outdir):
         'GenicCpGs_percent_covered_q40': {
             'key1'   : 'GenicCpGs_percent_covered',
             'key2'   : 'Q40',
-            'title'  : 'CpG Coverage of Genic Regions (Q40 Reads)',
+            'title'  : 'CpG Coverage of Genic Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -128,7 +128,7 @@ def cpg_region_plots(data, outdir):
         'CGICpGs_percent_covered_all': {
             'key1'   : 'CGICpGs_percent_covered',
             'key2'   : 'All',
-            'title'  : 'CpG Coverage of CpG Island Regions (All Reads)',
+            'title'  : 'CpG Coverage of CpG Island Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -137,7 +137,7 @@ def cpg_region_plots(data, outdir):
         'CGICpGs_percent_covered_q40': {
             'key1'   : 'CGICpGs_percent_covered',
             'key2'   : 'Q40',
-            'title'  : 'CpG Coverage of CpG Island Regions (Q40 Reads)',
+            'title'  : 'CpG Coverage of CpG Island Regions',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -146,7 +146,7 @@ def cpg_region_plots(data, outdir):
         'TotalCpGs_percent_covered_all': {
             'key1'   : 'TotalCpGs_percent_covered',
             'key2'   : 'All',
-            'title'  : 'Coverage for All CpGs in Genome (All Reads)',
+            'title'  : 'Coverage for All CpGs in Genome',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -155,7 +155,7 @@ def cpg_region_plots(data, outdir):
         'TotalCpGs_percent_covered_q40': {
             'key1'   : 'TotalCpGs_percent_covered',
             'key2'   : 'Q40',
-            'title'  : 'Coverage for All CpGs in Genome (Q40 Reads)',
+            'title'  : 'Coverage for All CpGs in Genome',
             'xlab'   : 'Percentage of CpGs',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -248,13 +248,37 @@ def read_alignment_plot(data, outdir):
         outdir+'read_mapping_sample_B.pdf'
     )
 
+    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'aligned_reads', 'mapq_percent', False)
+    plotting.create_line_chart(
+        A,
+        'Distribution of MAPQ Scores: Sample A',
+        'MAPQ Score',
+        'Percent of Reads',
+        (0,  60, 10),
+        (0, 100, 20),
+        3,
+        'upper left',
+        outdir+'mapq_dist_sample_A.pdf'
+    )
+    plotting.create_line_chart(
+        B,
+        'Distribution of MAPQ Scores: Sample B',
+        'MAPQ Score',
+        'Percent of Reads',
+        (0,  60, 10),
+        (0, 100, 20),
+        3,
+        'upper left',
+        outdir+'mapq_dist_sample_B.pdf'
+    )
+
 def duplicate_rate_plots(data, outdir):
     """Make plots with duplicate read rate percentages."""
     meta = {
         'dup_report_all': {
             'key1'   : 'dup_report',
             'key2'   : 'dup_all',
-            'title'  : 'Percentage of Duplicate Marked Reads (All Reads)',
+            'title'  : 'Percentage of Duplicate Marked Reads',
             'xlab'   : 'Percentage of Reads',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -263,7 +287,7 @@ def duplicate_rate_plots(data, outdir):
         'dup_report_q40': {
             'key1'   : 'dup_report',
             'key2'   : 'dup_q40',
-            'title'  : 'Percentage of Duplicate Marked Reads (Q40 Reads)',
+            'title'  : 'Percentage of Duplicate Marked Reads',
             'xlab'   : 'Percentage of Reads',
             'ylab'   : '',
             'xlims'  : (0, 100, 10),
@@ -465,7 +489,7 @@ def create_covdist_plots(data, outdir):
     A, B = utils.retrieve_data_points_from_dict(data, 'covdist_all_base', False)
     plotting.create_line_chart(
         A,
-        'Base Cumulative Coverage (All Bases): Sample A',
+        'Base Cumulative Coverage: Sample A',
         'Coverage',
         'Number of Bases (Millions)',
         (0, 50, 5),
@@ -476,7 +500,7 @@ def create_covdist_plots(data, outdir):
     )
     plotting.create_line_chart(
         B,
-        'Base Cumulative Coverage (All Bases): Sample B',
+        'Base Cumulative Coverage: Sample B',
         'Coverage',
         'Number of Bases (Millions)',
         (0, 50, 5),
@@ -489,7 +513,7 @@ def create_covdist_plots(data, outdir):
     A, B = utils.retrieve_data_points_from_dict(data, 'covdist_q40_base', False)
     plotting.create_line_chart(
         A,
-        'Base Cumulative Coverage (Q40 Bases): Sample A',
+        'Base Cumulative Coverage: Sample A',
         'Coverage',
         'Number of Bases (Millions)',
         (0, 50, 5),
@@ -500,7 +524,7 @@ def create_covdist_plots(data, outdir):
     )
     plotting.create_line_chart(
         B,
-        'Base Cumulative Coverage (Q40 Bases): Sample B',
+        'Base Cumulative Coverage: Sample B',
         'Coverage',
         'Number of Bases (Millions)',
         (0, 50, 5),
@@ -513,7 +537,7 @@ def create_covdist_plots(data, outdir):
     A, B = utils.retrieve_data_points_from_dict(data, 'covdist_all_cpg', False)
     plotting.create_line_chart(
         A,
-        'CpG Cumulative Coverage (All CpGs): Sample A',
+        'CpG Cumulative Coverage: Sample A',
         'Coverage',
         'Number of CpGs (Millions)',
         (0, 50, 5),
@@ -524,7 +548,7 @@ def create_covdist_plots(data, outdir):
     )
     plotting.create_line_chart(
         B,
-        'CpG Cumulative Coverage (All CpGs): Sample B',
+        'CpG Cumulative Coverage: Sample B',
         'Coverage',
         'Number of CpGs (Millions)',
         (0, 50, 5),
@@ -537,7 +561,7 @@ def create_covdist_plots(data, outdir):
     A, B = utils.retrieve_data_points_from_dict(data, 'covdist_q40_cpg', False)
     plotting.create_line_chart(
         A,
-        'CpG Cumulative Coverage (Q40 CpGs): Sample A',
+        'CpG Cumulative Coverage: Sample A',
         'Coverage',
         'Number of CpGs (Millions)',
         (0, 50, 5),
@@ -548,7 +572,7 @@ def create_covdist_plots(data, outdir):
     )
     plotting.create_line_chart(
         B,
-        'CpG Cumulative Coverage (Q40 CpGs): Sample B',
+        'CpG Cumulative Coverage: Sample B',
         'Coverage',
         'Number of CpGs (Millions)',
         (0, 50, 5),
