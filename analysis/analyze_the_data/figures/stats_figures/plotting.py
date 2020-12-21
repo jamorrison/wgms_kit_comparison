@@ -202,8 +202,8 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
         y = constants.SAMPLE_PLOT_VALUE[tup[0]]
         f = constants.REP_FORMAT[constants.SAMPLE_REP[tup[0]]]
         l = 'Rep. {}'.format(constants.SAMPLE_REP[tup[0]])
-        #c = constants.SAMPLE_COLOR[tup[0]]
-        c = 'black'
+        c = constants.SAMPLE_COLOR[tup[0]]
+        #c = 'black'
         plt.plot(x, y, f, fillstyle='none', markersize=8, color=c)
 
         if ('rep2' not in tup[0]) and ('Rep2' not in tup[0]):
