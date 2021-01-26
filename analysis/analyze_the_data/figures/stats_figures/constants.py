@@ -189,7 +189,7 @@ B_ORDER = {
 SAMPLE_COLOR = {
     'FtubeAkapaBC': '#D81B60',
     'FtubeAneb': '#1E88E5',
-    'FtubeApbat': '#FFC107',
+    'FtubeApbat': '#A0522D',
     'FtubeAswift': '#004D40',
     'FtubeAkapaBCrep2': '#D81B60',
     'FtubeAnebRep2': '#1E88E5',
@@ -200,7 +200,7 @@ SAMPLE_COLOR = {
     'FtubeAswift10ngRep2': '#004D40',
     'FtubeBkapaBC': '#D81B60',
     'FtubeBneb': '#1E88E5',
-    'FtubeBpbat': '#FFC107',
+    'FtubeBpbat': '#A0522D',
     'FtubeBswift': '#004D40',
     'FtubeBkapaBCrep2': '#D81B60',
     'FtubeBnebRep2': '#1E88E5',

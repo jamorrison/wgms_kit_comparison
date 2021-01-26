@@ -29,9 +29,9 @@ def create_single_column_bar_chart(plot_data, title, xlab, ylab, xlims, figname)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
@@ -82,9 +82,9 @@ def create_single_column_bar_chart_with_labels(plot_data, text_labels, tag, titl
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
@@ -154,9 +154,9 @@ def create_double_column_bar_chart(plot_data_1, sample_1, plot_data_2, sample_2,
     ax.legend(ncol=2, bbox_to_anchor=(0.0, 1.03), frameon=False,
               loc='center', fontsize='large')
 
-    plt.title(title, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
@@ -218,16 +218,18 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
 
     nams = sorted(nams, key=lambda d: d[0], reverse=False)
 
-    if len(title) > 40:
-        ax.legend(ncol=2, bbox_to_anchor=(0.15, 1.03), frameon=False,
-                loc='right', fontsize='x-large')
-    else:
-        ax.legend(ncol=3, bbox_to_anchor=(0.25, 1.04), frameon=False,
-                loc='right', fontsize='x-large')
+    #if len(title) > 40:
+    #    ax.legend(ncol=2, bbox_to_anchor=(0.15, 1.03), frameon=False,
+    #            loc='right', fontsize='x-large')
+    #else:
+    #    ax.legend(ncol=3, bbox_to_anchor=(0.25, 1.04), frameon=False,
+    #            loc='right', fontsize='x-large')
+    ax.legend(ncol=3, bbox_to_anchor=(0.5, 1), frameon=False,
+              loc='lower center', fontsize='large')
 
-    plt.title(title, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, pad=40, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
@@ -283,16 +285,17 @@ def create_read_alignment_plot(plot_data, title, xlab, ylab, xlims, figname):
                 label=colname, color=color)
 
     for y, lab in enumerate(labs):
-        ax.text(50, y, lab, ha='center', va='center', color='white', fontsize='large')
+        ax.text(50, y, lab, ha='center', va='center',
+                color='white', fontsize='large')
 
-    ax.legend(ncol=len(cats), bbox_to_anchor=(0.5, 1),
+    ax.legend(ncol=len(cats), bbox_to_anchor=(0.5, 1), frameon=False,
               loc='lower center', fontsize='large')
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, pad=40, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, pad=40, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
@@ -337,9 +340,9 @@ def create_line_chart(plot_data, title, xlab, ylab, xlims, ylims, ncols, legend_
 
         plt.plot(x, y, stl, color=col, label=lab, markersize=3.5, markevery=every)
 
-    plt.title(title, fontsize=16)
-    plt.xlabel(xlab, fontsize=14)
-    plt.ylabel(ylab, fontsize=14)
+    plt.title(title, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
 
     plt.xlim(xlims[0]-(0.25*xlims[2]), xlims[1]+(0.25*xlims[2]))
     plt.ylim(ylims[0]-(0.25*ylims[2]), ylims[1]+(0.25*ylims[2]))

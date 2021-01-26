@@ -622,10 +622,10 @@ def create_complexity_curve_plots(data, outdir):
         'Library Complexity: Sample A',
         'Total Number of Reads (Millions)',
         'Number of Unique Reads (Millions)',
-        (0, 900, 100),
         (0, 600, 100),
+        (0, 500, 100),
         2,
-        'lower right',
+        'upper left',
         outdir+'complexity_sample_A.pdf',
         every=50
     )
