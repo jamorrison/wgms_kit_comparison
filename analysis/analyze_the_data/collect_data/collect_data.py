@@ -9,6 +9,7 @@ import preseq_reports
 import obs_exp_ratio
 import cpg_coverage
 import trim_reports
+import trinuc_meth
 import raw_read
 
 TOPDIR='2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis'
@@ -82,6 +83,14 @@ def raw_bams():
         samp, data = obs_exp_ratio.process_file(f, prefix='mappy_')
         obs_exp_data[samp] = data
 
+    # Trinucleotide context (CAH, CAG, CTH, CTG) methylation
+    trinuc_files = glob.glob(TOPDIR + '/analyze_the_data/cpg_questions/trinuc_methylation/*_raw.tsv')
+
+    trinuc_results = {}
+    for f in trinuc_files:
+        samp, data = trinuc_meth.process_file(f, '_raw.tsv')
+        trinuc_results[samp] = data
+
     collected_data = {}
     dics = [
         raw_quals,
@@ -91,7 +100,8 @@ def raw_bams():
         stats_results,
         bisc_qc_data,
         preseq_results,
-        obs_exp_data
+        obs_exp_data,
+        trinuc_results
     ]
     for d in dics:
         for key, value in d.items():
@@ -163,6 +173,14 @@ def subsampled_bams():
         samp, data = preseq_reports.process_file(f)
         preseq_results[samp] = data
 
+    # Trinucleotide context (CAH, CAG, CTH, CTG) methylation
+    trinuc_files = glob.glob(TOPDIR + '/analyze_the_data/cpg_questions/trinuc_methylation/*_sub.tsv')
+
+    trinuc_results = {}
+    for f in trinuc_files:
+        samp, data = trinuc_meth.process_file(f, '_sub.tsv')
+        trinuc_results[samp] = data
+
     collected_data = {}
     dics = [
         raw_quals,
@@ -171,7 +189,8 @@ def subsampled_bams():
         trim_results,
         stats_results,
         bisc_qc_data,
-        preseq_results
+        preseq_results,
+        trinuc_results
     ]
     for d in dics:
         for key, value in d.items():

@@ -32,6 +32,10 @@ def clean_data(dic):
                 output[tag + k] = float(v) # Add to output dictionary as a float
             elif k == 'low_base_qual':
                 output[tag + k] = float(v) # Add to output dictionary as a float
+            elif k == 'med_base_qual':
+                output[tag + k] = float(v) # Add to output dictionary as a float
+            elif k == 'hi_base_qual':
+                output[tag + k] = float(v) # Add to output dictionary as a float
 
     # Double check the read 1 and read 2 samples are the same
     if dic['read1']['sample'] == dic['read2']['sample']:
@@ -74,12 +78,16 @@ def process_file(fname):
         r'(Read 1)\s+(% of reads with avg. base quality >= 20)\:\s+(\d*[.,]?\d*)',
         r'(Read 1)\s+(% of reads with avg. base quality >= 30)\:\s+(\d*[.,]?\d*)',
         r'(Read 1)\s+(% of bases with base quality < 20)\:\s+(\d*[.,]?\d*)',
+        r'(Read 1)\s+(% of bases with base quality >= 20 and <= 30)\:\s+(\d*[.,]?\d*)',
+        r'(Read 1)\s+(% of bases with base quality > 30)\:\s+(\d*[.,]?\d*)',
         r'(Read 2)\s+(filename)\:\s+(\/.*?\.[\w:]+)',
         r'(Read 2)\s+(number of reads)\:\s+(\d+)',
         r'(Read 2)\s+(number of bases)\:\s+(\d+)',
         r'(Read 2)\s+(% of reads with avg. base quality >= 20)\:\s+(\d*[.,]?\d*)',
         r'(Read 2)\s+(% of reads with avg. base quality >= 30)\:\s+(\d*[.,]?\d*)',
-        r'(Read 2)\s+(% of bases with base quality < 20)\:\s+(\d*[.,]?\d*)'
+        r'(Read 2)\s+(% of bases with base quality < 20)\:\s+(\d*[.,]?\d*)',
+        r'(Read 2)\s+(% of bases with base quality >= 20 and <= 30)\:\s+(\d*[.,]?\d*)',
+        r'(Read 2)\s+(% of bases with base quality > 30)\:\s+(\d*[.,]?\d*)'
     ]
 
     # Mapping search patterns to dictionary keys
@@ -89,7 +97,9 @@ def process_file(fname):
         'number of bases': 'base_count',
         '% of reads with avg. base quality >= 20': 'read_base_20',
         '% of reads with avg. base quality >= 30': 'read_base_30',
-        '% of bases with base quality < 20': 'low_base_qual'
+        '% of bases with base quality < 20': 'low_base_qual',
+        '% of bases with base quality >= 20 and <= 30': 'med_base_qual',
+        '% of bases with base quality > 30': 'hi_base_qual'
     }
     
     # Read file and collect data
