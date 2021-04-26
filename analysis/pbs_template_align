@@ -57,6 +57,11 @@ ${BISCUIT}/biscuit mergecg \
 bgzip > QQQ.cg.sorted.mergecg.bed.gz
 tabix -p bed QQQ.cg.sorted.mergecg.bed.gz
 
+# biscuit c context vcf2bed
+${BISCUIT}/biscuit vcf2bed -t c -e \
+    QQQ.pileup.vcf.gz | \
+gzip > QQQ.c.context.sorted.bed.gz
+
 # Launch qc
 ${BISCUIT}/scripts/QC.sh \
     -v QQQ.pileup.vcf.gz \

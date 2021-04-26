@@ -1,0 +1,59 @@
+#!/bin/bash
+#PBS -N control_vectors
+#PBS -e QQQ.stderr
+#PBS -o QQQ.stdout
+#PBS -l nodes=1:ppn=20,mem=220gb,walltime=72:00:00
+
+set -euo pipefail
+
+echo "Started at `date`"
+
+# Useful paths
+BISCUIT="installed_packages/biscuit-release-0.3.16.20200420"
+SAMBLST="installed_packages/samblaster-v.0.1.25"
+DIRLOC="2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis/control_vectors"
+REFLOC="references/methylation_control_vectors_genome"
+FASTQS="2019_11_07_FallopianTube_WGBS_Kit_Comparison/trimmed_fastq"
+
+# Use the same number of threads throughout
+NTHREADS=20
+
+# Change to working directory
+cd ${DIRLOC}
+
+# Print out versions of software used
+echo "Using versions:"
+echo -e "\tsamtools: `samtools --version`"
+echo -e "\tsamblaster: `${SAMBLST}/samblaster --version`"
+echo -e "\tbedtools: `bedtools --version`"
+echo -e "\tbgzip: `bgzip --version`"
+echo -e "\ttabix: `tabix --version`"
+
+# biscuit align
+${BISCUIT}/biscuit align -M -t "${NTHREADS}" \
+    -R '@RG\tLB:QQQ\tID:WGMS_Kit_Comp_QQQ_controls\tPL:Illumina\tPU:NovaSeq\tSM:QQQ' \
+    ${REFLOC}/lambdaphage_puc19.fa \
+    ${FASTQS}/QQQ_L000_R1_001_val_1.fq.gz \
+    ${FASTQS}/QQQ_L000_R2_001_val_2.fq.gz | \
+${SAMBLST}/samblaster -M | \
+samtools view -hbu | \
+samtools sort -@ "${NTHREADS}" -m 5G -o QQQ.controls.sorted.markdup.bam -O BAM -
+samtools index -@ "${NTHREADS}" QQQ.controls.sorted.markdup.bam
+
+# biscuit pileup
+${BISCUIT}/biscuit pileup -q "${NTHREADS}" \
+    ${REFLOC}/lambdaphage_puc19.fa \
+    QQQ.controls.sorted.markdup.bam | \
+bgzip > QQQ.controls.pileup.vcf.gz
+tabix -p vcf QQQ.controls.pileup.vcf.gz
+
+# biscuit cg vcf2bed
+${BISCUIT}/biscuit vcf2bed -k 1 -t cg \
+    QQQ.controls.pileup.vcf.gz | \
+bedtools sort -i - | \
+${BISCUIT}/biscuit mergecg \
+    ${REFLOC}/lambdaphage_puc19.fa - | \
+bgzip > QQQ.controls.cg.sorted.mergecg.bed.gz
+tabix -p bed QQQ.controls.cg.sorted.mergecg.bed.gz
+
+echo "Ended at `date`"

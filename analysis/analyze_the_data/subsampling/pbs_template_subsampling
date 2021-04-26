@@ -47,6 +47,11 @@ ${BISCUIT}/biscuit mergecg \
     ${REFLOC}/GRCh38.p13.genome.fa - | \
 gzip > QQQ.subsampled.cg.sorted.mergecg.bed.gz
 
+# biscuit c context vcf2bed
+${BISCUIT}/biscuit vcf2bed -t c -e \
+    QQQ.subsampled.pileup.vcf.gz | \
+gzip > QQQ.subsampled.c.context.sorted.bed.gz
+
 # Find average beta value across 100kb bins
 bedtools map \
     -a ${DIRLOC}/../../qc_assets/100kb_hg38_windows.bed \
