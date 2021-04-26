@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import spearmanr, gaussian_kde
 import sys
 
-def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_message=False, create_plot=True):
+def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_message=False, create_plots=True):
     """Find the Spearman R correlation value and create scatter plot of beta
        values.
 
@@ -16,7 +16,7 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
             ylab          - name of values on y-axis
             figname       - name of file to save figure as
             print_message - whether to print out a nice message about correlation
-            create_plot   - whether to generate the correlation plot
+            create_plots  - whether to generate the correlation plot
 
     Returns: tuple (n_cpgs, coef, p)
     """
@@ -43,7 +43,8 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
         print('The coefficient between {} and {} ='.format(xlab, ylab), end=' ')
         print('{:0.3f} (with p-value = {:0.3f} and # CpGs = {:,})'.format(coef, p, n_cpgs))
 
-    if create_plot:
+    if create_plots:
+        # Correlation figure
         fig, ax = plt.subplots(figsize=(5,5))
         plt.tight_layout()
 
@@ -55,7 +56,6 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
         xi, yi = np.mgrid[xs.min():xs.max():nbins*1j, ys.min():ys.max():nbins*1j]
         zi = k(np.vstack([xi.flatten(), yi.flatten()]))
         
-        #im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r)
         im = ax.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.PuBu_r,
                           norm=colors.LogNorm(vmin=0.001, vmax=zi.max()))
         ax.contour(xi, yi, zi.reshape(xi.shape), cmap=plt.cm.viridis)
@@ -79,6 +79,39 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
         plt.colorbar(im, ax=ax)
 
         plt.savefig(figname, bbox_inches='tight')
+        plt.close('all')
+
+        # Collapse correlation plots into histograms
+        fig, ax = plt.subplots(figsize=(5,5))
+        plt.tight_layout()
+
+        n1, b1, p1 = plt.hist(xs, bins=50, range=(0,1), density=True,
+                              color='red', label=xlab, alpha=0.5)
+                              #color='#005596', label=xlab, alpha=0.5)
+        n2, b2, p2 = plt.hist(ys, bins=50, range=(0,1), density=True,
+                              color='blue', label=ylab, alpha=0.5)
+                              #color='#3fa294', label=ylab, alpha=0.5)
+
+        ax.legend(ncol=2, loc='upper left')
+
+        plt.title(title, fontsize=24)
+        plt.xlabel('Methylation Level', fontsize=20)
+        plt.ylabel('# CpGs / Total # CpGs / 0.02', fontsize=20)
+
+        plt.xlim(-0.05, 1.05)
+        plt.ylim(-0.05, 1.05*max(max(n1), max(n2)))
+        plt.xticks(
+            [i for i in np.arange(0, 1.2, 0.2)],
+            ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)],
+            fontsize=16
+        )
+        plt.yticks(
+            [i for i in np.arange(0, 1.05*max(max(n1),max(n2)), 1)],
+            ['{:.1f}'.format(i) for i in np.arange(0, 1.05*max(max(n1),max(n2)), 1)],
+            fontsize=16
+        )
+
+        plt.savefig('hist_'+figname, bbox_inches='tight')
         plt.close('all')
 
     return (n_cpgs, coef, p)
@@ -155,7 +188,7 @@ def main():
                         data_sets[d2]['axis_label'],
                         data_sets[d1]['tag'] + '_' + data_sets[d2]['tag'] + '.png',
                         print_message=False,
-                        create_plot=True
+                        create_plots=True
                     )
                 else:
                     n_cpgs, coef, p = find_correlation_and_plot(
@@ -166,7 +199,7 @@ def main():
                         data_sets[d2]['axis_label'],
                         data_sets[d1]['tag'] + '_' + data_sets[d2]['tag'] + '.png',
                         print_message=False,
-                        create_plot=False
+                        create_plots=False
                     )
 
                 f.write('{}\t{}\t{}\t{}\t{}\n'.format(data_sets[d1]['tag'], data_sets[d2]['tag'], n_cpgs, coef, p))
