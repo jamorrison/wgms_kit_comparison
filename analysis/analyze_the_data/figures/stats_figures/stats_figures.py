@@ -36,6 +36,22 @@ def raw_read_base_qual_plots(data, outdir):
             'xlims'  : (0,  10,  1),
             'figname': outdir+'r1_low_base_qual.pdf'
         },
+        'r1_med_base_qual': {
+            'key'    : 'r1_med_base_qual',
+            'title'  : 'Read 1 Bases with Base Quality >= 20 and <= 30',
+            'xlab'   : 'Percentage of Bases',
+            'ylab'   : '',
+            'xlims'  : (0,  10,  1),
+            'figname': outdir+'r1_med_base_qual.pdf'
+        },
+        'r1_hi_base_qual': {
+            'key'    : 'r1_hi_base_qual',
+            'title'  : 'Read 1 Bases with Base Quality > 30',
+            'xlab'   : 'Percentage of Bases',
+            'ylab'   : '',
+            'xlims'  : (0,  100,  10),
+            'figname': outdir+'r1_hi_base_qual.pdf'
+        },
         'r2_read_base_20':  {
             'key'    : 'r2_read_base_20',
             'title'  : 'Read 2 Reads with Avg. Base Quality >= 20',
@@ -60,11 +76,36 @@ def raw_read_base_qual_plots(data, outdir):
             'xlims'  : (0,  10,  1),
             'figname': outdir+'r2_low_base_qual.pdf'
         },
+        'r2_med_base_qual': {
+            'key'    : 'r2_med_base_qual',
+            'title'  : 'Read 2 Bases with Base Quality >= 20 and <= 30',
+            'xlab'   : 'Percentage of Bases',
+            'ylab'   : '',
+            'xlims'  : (0,  10,  1),
+            'figname': outdir+'r2_med_base_qual.pdf'
+        },
+        'r2_hi_base_qual': {
+            'key'    : 'r2_hi_base_qual',
+            'title'  : 'Read 2 Bases with Base Quality > 30',
+            'xlab'   : 'Percentage of Bases',
+            'ylab'   : '',
+            'xlims'  : (0,  100,  10),
+            'figname': outdir+'r2_hi_base_qual.pdf'
+        },
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_one_output(data, vals['key'], True)
-        plotting.create_rep_avg_plot(plot_data, vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'])
+        plot_data = utils.retrieve_single_element_data_one_output(
+            data, vals['key'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
 
     return 0
 
@@ -164,8 +205,17 @@ def cpg_region_plots(data, outdir):
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_from_dict_one_output(data, vals['key1'], vals['key2'], True)
-        plotting.create_rep_avg_plot(plot_data, vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'])
+        plot_data = utils.retrieve_single_element_data_from_dict_one_output(
+            data, vals['key1'], vals['key2'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
 
     return 0
 
@@ -223,8 +273,17 @@ def trimmed_stats_plots(data, outdir):
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_one_output(data, vals['key'], True)
-        plotting.create_rep_avg_plot([(s, 100*i) for s, i in plot_data], vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'])
+        plot_data = utils.retrieve_single_element_data_one_output(
+            data, vals['key'], True
+        )
+        plotting.create_rep_avg_plot(
+            [(s, 100*i) for s, i in plot_data],
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
 
     return 0
 
@@ -248,7 +307,9 @@ def read_alignment_plot(data, outdir):
         outdir+'read_mapping_sample_B.pdf'
     )
 
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'aligned_reads', 'mapq_percent', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'aligned_reads', 'mapq_percent', False
+    )
     plotting.create_line_chart(
         A,
         'Distribution of MAPQ Scores: Sample A',
@@ -270,6 +331,16 @@ def read_alignment_plot(data, outdir):
         3,
         'upper left',
         outdir+'mapq_dist_sample_B.pdf'
+    )
+
+    plot_data = utils.retrieve_aligned_reads_total_only(data, True)
+    plotting.create_rep_avg_plot(
+        [(samp, i/1000000.) for samp, i in plot_data],
+        'Number of Aligned Read Fragments',
+        'Aligned Read Fragments (Millions)',
+        '',
+        (0, 1800, 300),
+        outdir+'aligned_reads.pdf'
     )
 
 def duplicate_rate_plots(data, outdir):
@@ -296,8 +367,17 @@ def duplicate_rate_plots(data, outdir):
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_from_dict_one_output(data, vals['key1'], vals['key2'], True)
-        plotting.create_rep_avg_plot(plot_data, vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'])
+        plot_data = utils.retrieve_single_element_data_from_dict_one_output(
+            data, vals['key1'], vals['key2'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
 
     return 0
 
@@ -379,14 +459,77 @@ def cpn_retention_plots(data, outdir):
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_from_dict_one_output(data, vals['key1'], vals['key2'], True)
-        plotting.create_rep_avg_plot(plot_data, vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'])
+        plot_data = utils.retrieve_single_element_data_from_dict_one_output(
+            data, vals['key1'], vals['key2'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
+
+    return 0
+
+def create_trinucleotide_methylation_plots(data, outdir):
+    """Make plots with CpWpN retention rate percentages."""
+    meta = {
+        'cah_methylation_percent': {
+            'key'    : 'cah_methylation_percent',
+            'title'  : 'Base-averaged CpApH Retention',
+            'xlab'   : 'Percent Retained',
+            'ylab'   : '',
+            'xlims'  : (0, 5, 1),
+            'figname': outdir+'cah_meth.pdf'
+        },
+        'cag_methylation_percent': {
+            'key'    : 'cag_methylation_percent',
+            'title'  : 'Base-averaged CpApG Retention',
+            'xlab'   : 'Percent Retained',
+            'ylab'   : '',
+            'xlims'  : (0, 5, 1),
+            'figname': outdir+'cag_meth.pdf'
+        },
+        'cth_methylation_percent': {
+            'key'    : 'cth_methylation_percent',
+            'title'  : 'Base-averaged CpTpH Retention',
+            'xlab'   : 'Percent Retained',
+            'ylab'   : '',
+            'xlims'  : (0, 5, 1),
+            'figname': outdir+'cth_meth.pdf'
+        },
+        'ctg_methylation_percent': {
+            'key'    : 'ctg_methylation_percent',
+            'title'  : 'Base-averaged CpTpG Retention',
+            'xlab'   : 'Percent Retained',
+            'ylab'   : '',
+            'xlims'  : (0, 5, 1),
+            'figname': outdir+'ctg_meth.pdf'
+        },
+    }
+
+    for vals in meta.values():
+        plot_data = utils.retrieve_single_element_data_one_output(
+            data, vals['key'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname']
+        )
 
     return 0
 
 def mbias_plots(data, outdir):
     """Make M-bias plots."""
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'cpg_rtn_readpos', '1', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'cpg_rtn_readpos', '1', False
+    )
     plotting.create_line_chart(
         A,
         'Read 1 CpG Retention by Read Position: Sample A',
@@ -410,7 +553,9 @@ def mbias_plots(data, outdir):
         outdir+'r1_cpg_rtn_readpos_sample_B.pdf'
     )
 
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'cpg_rtn_readpos', '2', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'cpg_rtn_readpos', '2', False
+    )
     plotting.create_line_chart(
         A,
         'Read 2 CpG Retention by Read Position: Sample A',
@@ -434,7 +579,9 @@ def mbias_plots(data, outdir):
         outdir+'r2_cpg_rtn_readpos_sample_B.pdf'
     )
 
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'cph_rtn_readpos', '1', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'cph_rtn_readpos', '1', False
+    )
     plotting.create_line_chart(
         A,
         'Read 1 CpH Retention by Read Position: Sample A',
@@ -458,7 +605,9 @@ def mbias_plots(data, outdir):
         outdir+'r1_cph_rtn_readpos_sample_B.pdf'
     )
 
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'cph_rtn_readpos', '2', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'cph_rtn_readpos', '2', False
+    )
     plotting.create_line_chart(
         A,
         'Read 2 CpH Retention by Read Position: Sample A',
@@ -586,7 +735,9 @@ def create_covdist_plots(data, outdir):
 
 def create_insert_size_plots(data, outdir):
     """Create plot of insert sizes."""
-    A, B = utils.retrieve_data_points_from_dict_in_dict(data, 'isize_data', 'percent', False)
+    A, B = utils.retrieve_data_points_from_dict_in_dict(
+        data, 'isize_data', 'percent', False
+    )
     plotting.create_line_chart(
         A,
         'Insert Size: Sample A',
@@ -717,8 +868,18 @@ def create_obs_exp_ratio_plots(data, outdir):
     }
 
     for vals in meta.values():
-        plot_data = utils.retrieve_single_element_data_one_output(data, vals['key'], True)
-        plotting.create_rep_avg_plot(plot_data, vals['title'], vals['xlab'], vals['ylab'], vals['xlims'], vals['figname'], add_line=True)
+        plot_data = utils.retrieve_single_element_data_one_output(
+            data, vals['key'], True
+        )
+        plotting.create_rep_avg_plot(
+            plot_data,
+            vals['title'],
+            vals['xlab'],
+            vals['ylab'],
+            vals['xlims'],
+            vals['figname'],
+            add_line=True
+        )
 
     return 0
 
@@ -731,13 +892,14 @@ def main():
     with open('2019_11_07_FallopianTube_WGBS_Kit_Comparison/analysis/analyze_the_data/collect_data/kit_comp_collected_data_subsampled.json', 'r') as f:
         kit_comp_data_sub = json.load(f)
 
+    plot_dir = 'color_plots'
     do_raw_bams = True
     do_sub_bams = True
 
     # Raw BAM plots
     if do_raw_bams:
-        raw_bam_dir = 'raw_bam_plots/'
-        Path(raw_bam_dir).mkdir(exist_ok=True)
+        raw_bam_dir = plot_dir + '/raw_bam_plots/'
+        Path(raw_bam_dir).mkdir(parents=True, exist_ok=True)
 
         raw_read_base_qual_plots(kit_comp_data, raw_bam_dir)
         cpg_region_plots(kit_comp_data, raw_bam_dir)
@@ -751,17 +913,19 @@ def main():
         create_complexity_curve_plots(kit_comp_data, raw_bam_dir)
         create_tex_table(kit_comp_data, raw_bam_dir)
         create_obs_exp_ratio_plots(kit_comp_data, raw_bam_dir)
+        create_trinucleotide_methylation_plots(kit_comp_data, raw_bam_dir)
 
     # Subsampled BAM plots
     if do_sub_bams:
-        sub_bam_dir = 'sub_bam_plots/'
-        Path(sub_bam_dir).mkdir(exist_ok=True)
+        sub_bam_dir = plot_dir + '/sub_bam_plots/'
+        Path(sub_bam_dir).mkdir(parents=True, exist_ok=True)
 
         cpg_region_plots(kit_comp_data_sub, sub_bam_dir)
         cpn_retention_plots(kit_comp_data_sub, sub_bam_dir)
         mbias_plots(kit_comp_data_sub, sub_bam_dir)
         create_covdist_plots(kit_comp_data_sub, sub_bam_dir)
         create_tex_table(kit_comp_data_sub, sub_bam_dir)
+        create_trinucleotide_methylation_plots(kit_comp_data_sub, sub_bam_dir)
 
 if __name__ == '__main__':
     main()

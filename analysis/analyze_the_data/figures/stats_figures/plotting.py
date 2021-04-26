@@ -192,9 +192,9 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
 
     # Make some place holder entries for legend
     for key, value in constants.REP_FORMAT.items():
-        plt.plot(-1, 0, value, color='black', fillstyle='none', markersize=8,
+        plt.plot(-5, -5, value, color='black', fillstyle='none', markersize=8,
                  label='Rep. {}'.format(key))
-    ax.vlines(-1, 1, 2, linestyles='solid', label='Rep. Average')
+    ax.vlines(-1, -5, 2, color='black', linestyles='solid', label='Rep. Average')
 
     nams = [] # y-axis tick names
     for idx, tup in enumerate(plot_data):
@@ -211,19 +211,14 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
 
             if ('pbat' not in tup[0]):
                 avg = (x + plot_data[idx-1][1])/2
-                ax.vlines(avg, y-width/2, y+width/2, linestyles='solid')
+                ax.vlines(avg, y-width/2, y+width/2, color='black',
+                          linestyles='solid')
 
     if add_line:
         ax.axvline(1.0, alpha=0.6, color='grey', linestyle='--')
 
     nams = sorted(nams, key=lambda d: d[0], reverse=False)
 
-    #if len(title) > 40:
-    #    ax.legend(ncol=2, bbox_to_anchor=(0.15, 1.03), frameon=False,
-    #            loc='right', fontsize='x-large')
-    #else:
-    #    ax.legend(ncol=3, bbox_to_anchor=(0.25, 1.04), frameon=False,
-    #            loc='right', fontsize='x-large')
     ax.legend(ncol=3, bbox_to_anchor=(0.5, 1), frameon=False,
               loc='lower center', fontsize='large')
 
@@ -232,6 +227,7 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
     plt.ylabel(ylab, fontsize=16)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
+    plt.ylim(-1, len(nams))
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(

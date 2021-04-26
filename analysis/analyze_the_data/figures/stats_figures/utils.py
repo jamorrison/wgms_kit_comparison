@@ -101,6 +101,28 @@ def retrieve_single_element_data_from_dict_one_output(data, key1, key2, rev):
 
     return C
 
+def retrieve_aligned_reads_total_only(data, rev):
+    """Retrieve total number of aligned reads.
+
+    Will sort data based on REPLICATE_ORDER dictionary
+
+    Inputs: data - JSON dictionary
+            rev  - True/False for whether to reverse sort dictionaries
+
+    Returns: sorted list of tuples for each biological replicate
+             [tuple is (sample, total number of aligned reads)]
+    """
+    C = []
+
+    for samp in data.keys():
+        dic = data[samp]['aligned_reads']
+        tot = sum([val for _, val in dic.items() if _ != 'mapq_percent'])
+        C.append( (samp, tot) )
+
+    C = sorted(C, key=lambda d: constants.REPLICATE_ORDER[d[0]], reverse=rev)
+
+    return C
+
 def retrieve_aligned_reads(data, rev):
     """Retrieve aligned_reads entries and calculate values used in plots.
 
