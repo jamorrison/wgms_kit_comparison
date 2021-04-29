@@ -1,5 +1,6 @@
 """Create plots to show methylation for mitochondrial and control vector DNA."""
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
 import numpy as np
 import os
@@ -18,6 +19,45 @@ COLOR = {
      1: '#004D40', # Ftube{A,B}swift10ng
      0: '#004D40', # Ftube{A,B}swift10ngRep2
 }
+
+def extract_sample_info(sample_str):
+    """Extract kit, sample, and technical replicate from sample_str.
+
+    Inputs -
+        sample_str - string from sample name
+    Returns -
+        tuple (kit, biological sample name, technical replicate)
+    """
+    s = sample_str.replace('Ftube', '')
+
+    # The biological sample in now the first character in name
+    bio = s[0]
+
+    # Extract what kit is in sample
+    kit = ''
+    if 'kapabc' in s.lower():
+        kit = 'Kapa'
+    elif 'pbat' in s.lower():
+        kit = 'PBAT'
+    elif 'neb' in s.lower():
+        kit = 'NEB'
+    elif 'swift' in s.lower():
+        kit = 'Swift'
+
+    # Determine if low or high input
+    if '10ng' in s:
+        kit = 'Low ' + kit
+
+    # Determine technical replicate
+    rep = '1'
+    if 'rep2' in s.lower():
+        rep = '2'
+
+    if (bio not in ['A', 'B']) or (kit == ''):
+        print('[extract_sample_info] ERROR: Incorrect entry')
+        return ('', '', '')
+
+    return (kit, bio, rep)
 
 def import_file(fname, control=True, select_chr=None):
     """Read file into DataFrame and add some extra columns.
@@ -41,7 +81,9 @@ def import_file(fname, control=True, select_chr=None):
     samp = os.path.basename(fname)
     samp = samp.replace('.cg.sorted.mergecg.bed.gz', '')
     samp = samp.replace('.controls', '')
-    df['sample'] = samp
+    kit, bio, rep = extract_sample_info(samp)
+    df['sample'] = kit + ' Samp. ' + bio
+    df['Replicate'] = 'Rep. ' + rep
 
     # Include column of which control vector the CpG is from, only for control
     # vectors
@@ -56,7 +98,7 @@ def import_file(fname, control=True, select_chr=None):
 
     return out
 
-def create_plot(data, title, xlab, ylab, ynames, figname):
+def create_plot_matplotlib(data, title, xlab, ylab, ynames, figname):
     """Create violin plot of methylation data.
 
     Inputs -
@@ -97,6 +139,36 @@ def create_plot(data, title, xlab, ylab, ynames, figname):
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
 
+def create_plot(data, title, xlab, ylab, figname):
+    """Create split violin plot of methylation data.
+
+    Inputs -
+        data    - list of data to include in violinplot
+        title   - title of plot
+        xlab    - x-axis label of plot
+        ylab    - y-axis label of plot
+        figname - name of output file for plot
+    Returns -
+        Nothing, plot saved to disk
+    """
+    fig, ax = plt.subplots(figsize=(10,5))
+    plt.tight_layout()
+
+    sns.violinplot(data=data, x='beta', y='sample', hue='Replicate', cut=0,
+                   split=True, inner='quartile', linewidth=1, orient='h',
+                   palette={'Rep. 1': '#005596', 'Rep. 2': '#3fa294'})
+
+    ax.legend(title='', ncol=2, bbox_to_anchor=(0.5,1), frameon=False,
+              loc='lower center', fontsize='large')
+    plt.xlim(-0.05, 1.05)
+
+    plt.title(title, pad=40, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
+
+    plt.savefig(figname, bbox_inches='tight')
+    plt.close('all')
+
 def lambda_puc_plots():
     """Process control vector data into violin plots. """
     # Useful variables
@@ -128,110 +200,72 @@ def lambda_puc_plots():
     bs2_lo = import_file(path+'FtubeBswift10ngRep2'+appd)
     bs2_hi = import_file(path+'FtubeBswiftRep2'+appd)
 
-    # y-axis tick names
-    names = [
-        'Low Swift Rep. 2', 'Low Swift Rep. 1',
-        'Low NEB Rep. 2', 'Low NEB Rep. 1',
-        'Swift Rep. 2', 'Swift Rep. 1',
-        'PBAT Rep. 1',
-        'NEB Rep. 2', 'NEB Rep. 1',
-        'Kapa Rep. 2', 'Kapa Rep. 1'
-    ]
+    # Pull out lambdaphage data from files
+    lamb = pd.concat(
+        [ak1_hi[(ak1_hi.vector == 'lambda')],
+         ak2_hi[(ak2_hi.vector == 'lambda')],
+         bk1_hi[(bk1_hi.vector == 'lambda')],
+         bk2_hi[(bk2_hi.vector == 'lambda')],
+         an1_hi[(an1_hi.vector == 'lambda')],
+         an2_hi[(an2_hi.vector == 'lambda')],
+         bn1_hi[(bn1_hi.vector == 'lambda')],
+         bn2_hi[(bn2_hi.vector == 'lambda')],
+         ap1_hi[(ap1_hi.vector == 'lambda')],
+         bp1_hi[(bp1_hi.vector == 'lambda')],
+         as1_hi[(as1_hi.vector == 'lambda')],
+         as2_hi[(as2_hi.vector == 'lambda')],
+         bs1_hi[(bs1_hi.vector == 'lambda')],
+         bs2_hi[(bs2_hi.vector == 'lambda')],
+         an1_lo[(an1_lo.vector == 'lambda')],
+         an2_lo[(an2_lo.vector == 'lambda')],
+         bn1_lo[(bn1_lo.vector == 'lambda')],
+         bn2_lo[(bn2_lo.vector == 'lambda')],
+         as1_lo[(as1_lo.vector == 'lambda')],
+         as2_lo[(as2_lo.vector == 'lambda')],
+         bs1_lo[(bs1_lo.vector == 'lambda')],
+         bs2_lo[(bs2_lo.vector == 'lambda')]]
+    )
 
-    # Pull out lambdaphage data from Sample A files
-    a_lamb = [
-        as2_lo[(as2_lo.vector == 'lambda') & (as2_lo.covg > 0)]['beta'].values,
-        as1_lo[(as1_lo.vector == 'lambda') & (as1_lo.covg > 0)]['beta'].values,
-        an2_lo[(an2_lo.vector == 'lambda') & (an2_lo.covg > 0)]['beta'].values,
-        an1_lo[(an1_lo.vector == 'lambda') & (an1_lo.covg > 0)]['beta'].values,
-        as2_hi[(as2_hi.vector == 'lambda') & (as2_hi.covg > 0)]['beta'].values,
-        as1_hi[(as1_hi.vector == 'lambda') & (as1_hi.covg > 0)]['beta'].values,
-        ap1_hi[(ap1_hi.vector == 'lambda') & (ap1_hi.covg > 0)]['beta'].values,
-        an2_hi[(an2_hi.vector == 'lambda') & (an2_hi.covg > 0)]['beta'].values,
-        an1_hi[(an1_hi.vector == 'lambda') & (an1_hi.covg > 0)]['beta'].values,
-        ak2_hi[(ak2_hi.vector == 'lambda') & (ak2_hi.covg > 0)]['beta'].values,
-        ak1_hi[(ak1_hi.vector == 'lambda') & (ak1_hi.covg > 0)]['beta'].values
-    ]
-
-    # Pull out pUC19 data from Sample B files
-    a_puck = [
-        as2_lo[(as2_lo.vector == 'pUC19') & (as2_lo.covg > 0)]['beta'].values,
-        as1_lo[(as1_lo.vector == 'pUC19') & (as1_lo.covg > 0)]['beta'].values,
-        an2_lo[(an2_lo.vector == 'pUC19') & (an2_lo.covg > 0)]['beta'].values,
-        an1_lo[(an1_lo.vector == 'pUC19') & (an1_lo.covg > 0)]['beta'].values,
-        as2_hi[(as2_hi.vector == 'pUC19') & (as2_hi.covg > 0)]['beta'].values,
-        as1_hi[(as1_hi.vector == 'pUC19') & (as1_hi.covg > 0)]['beta'].values,
-        ap1_hi[(ap1_hi.vector == 'pUC19') & (ap1_hi.covg > 0)]['beta'].values,
-        an2_hi[(an2_hi.vector == 'pUC19') & (an2_hi.covg > 0)]['beta'].values,
-        an1_hi[(an1_hi.vector == 'pUC19') & (an1_hi.covg > 0)]['beta'].values,
-        ak2_hi[(ak2_hi.vector == 'pUC19') & (ak2_hi.covg > 0)]['beta'].values,
-        ak1_hi[(ak1_hi.vector == 'pUC19') & (ak1_hi.covg > 0)]['beta'].values
-    ]
-
-    # Pull out lambdaphage data from Sample B files
-    b_lamb = [
-        bs2_lo[(bs2_lo.vector == 'lambda') & (bs2_lo.covg > 0)]['beta'].values,
-        bs1_lo[(bs1_lo.vector == 'lambda') & (bs1_lo.covg > 0)]['beta'].values,
-        bn2_lo[(bn2_lo.vector == 'lambda') & (bn2_lo.covg > 0)]['beta'].values,
-        bn1_lo[(bn1_lo.vector == 'lambda') & (bn1_lo.covg > 0)]['beta'].values,
-        bs2_hi[(bs2_hi.vector == 'lambda') & (bs2_hi.covg > 0)]['beta'].values,
-        bs1_hi[(bs1_hi.vector == 'lambda') & (bs1_hi.covg > 0)]['beta'].values,
-        bp1_hi[(bp1_hi.vector == 'lambda') & (bp1_hi.covg > 0)]['beta'].values,
-        bn2_hi[(bn2_hi.vector == 'lambda') & (bn2_hi.covg > 0)]['beta'].values,
-        bn1_hi[(bn1_hi.vector == 'lambda') & (bn1_hi.covg > 0)]['beta'].values,
-        bk2_hi[(bk2_hi.vector == 'lambda') & (bk2_hi.covg > 0)]['beta'].values,
-        bk1_hi[(bk1_hi.vector == 'lambda') & (bk1_hi.covg > 0)]['beta'].values
-    ]
-
-    # Pull out pUC19 data from Sample B files
-    b_puck = [
-        bs2_lo[(bs2_lo.vector == 'pUC19') & (bs2_lo.covg > 0)]['beta'].values,
-        bs1_lo[(bs1_lo.vector == 'pUC19') & (bs1_lo.covg > 0)]['beta'].values,
-        bn2_lo[(bn2_lo.vector == 'pUC19') & (bn2_lo.covg > 0)]['beta'].values,
-        bn1_lo[(bn1_lo.vector == 'pUC19') & (bn1_lo.covg > 0)]['beta'].values,
-        bs2_hi[(bs2_hi.vector == 'pUC19') & (bs2_hi.covg > 0)]['beta'].values,
-        bs1_hi[(bs1_hi.vector == 'pUC19') & (bs1_hi.covg > 0)]['beta'].values,
-        bp1_hi[(bp1_hi.vector == 'pUC19') & (bp1_hi.covg > 0)]['beta'].values,
-        bn2_hi[(bn2_hi.vector == 'pUC19') & (bn2_hi.covg > 0)]['beta'].values,
-        bn1_hi[(bn1_hi.vector == 'pUC19') & (bn1_hi.covg > 0)]['beta'].values,
-        bk2_hi[(bk2_hi.vector == 'pUC19') & (bk2_hi.covg > 0)]['beta'].values,
-        bk1_hi[(bk1_hi.vector == 'pUC19') & (bk1_hi.covg > 0)]['beta'].values
-    ]
-
-    create_plot(
-        a_lamb,
-        'Lambdaphage Control Methylation: Sample A',
-        'Methylation Level',
-        '',
-        names,
-        'a_lamb_control.pdf'
+    # Pull out pUC19 data from files
+    puck = pd.concat(
+        [ak1_hi[(ak1_hi.vector == 'pUC19')],
+         ak2_hi[(ak2_hi.vector == 'pUC19')],
+         bk1_hi[(bk1_hi.vector == 'pUC19')],
+         bk2_hi[(bk2_hi.vector == 'pUC19')],
+         an1_hi[(an1_hi.vector == 'pUC19')],
+         an2_hi[(an2_hi.vector == 'pUC19')],
+         bn1_hi[(bn1_hi.vector == 'pUC19')],
+         bn2_hi[(bn2_hi.vector == 'pUC19')],
+         ap1_hi[(ap1_hi.vector == 'pUC19')],
+         bp1_hi[(bp1_hi.vector == 'pUC19')],
+         as1_hi[(as1_hi.vector == 'pUC19')],
+         as2_hi[(as2_hi.vector == 'pUC19')],
+         bs1_hi[(bs1_hi.vector == 'pUC19')],
+         bs2_hi[(bs2_hi.vector == 'pUC19')],
+         an1_lo[(an1_lo.vector == 'pUC19')],
+         an2_lo[(an2_lo.vector == 'pUC19')],
+         bn1_lo[(bn1_lo.vector == 'pUC19')],
+         bn2_lo[(bn2_lo.vector == 'pUC19')],
+         as1_lo[(as1_lo.vector == 'pUC19')],
+         as2_lo[(as2_lo.vector == 'pUC19')],
+         bs1_lo[(bs1_lo.vector == 'pUC19')],
+         bs2_lo[(bs2_lo.vector == 'pUC19')]]
     )
 
     create_plot(
-        a_puck,
-        'pUC19 Control Methylation: Sample A',
+        lamb,
+        'Lambdaphage Control Methylation',
         'Methylation Level',
         '',
-        names,
-        'a_puck_control.pdf'
+        'lamb_control.pdf'
     )
 
     create_plot(
-        b_lamb,
-        'Lambdaphage Control Methylation: Sample B',
+        puck,
+        'pUC19 Control Methylation',
         'Methylation Level',
         '',
-        names,
-        'b_lamb_control.pdf'
-    )
-
-    create_plot(
-        b_puck,
-        'pUC19 Control Methylation: Sample B',
-        'Methylation Level',
-        '',
-        names,
-        'b_puck_control.pdf'
+        'puck_control.pdf'
     )
 
 def mitochondria_plots():
@@ -265,62 +299,38 @@ def mitochondria_plots():
     bs2_lo = import_file(path+'FtubeBswift10ngRep2'+appd, control=False, select_chr='chrM')
     bs2_hi = import_file(path+'FtubeBswiftRep2'+appd, control=False, select_chr='chrM')
 
-    # y-axis tick  names
-    names = [
-        'Low Swift Rep. 2', 'Low Swift Rep. 1',
-        'Low NEB Rep. 2', 'Low NEB Rep. 1',
-        'Swift Rep. 2', 'Swift Rep. 1',
-        'PBAT Rep. 1',
-        'NEB Rep. 2', 'NEB Rep. 1',
-        'Kapa Rep. 2', 'Kapa Rep. 1'
-    ]
-
-    # Mitochondrial beta values for Sample A
-    a_chrm = [
-        as2_lo['beta'].values,
-        as1_lo['beta'].values,
-        an2_lo['beta'].values,
-        an1_lo['beta'].values,
-        as2_hi['beta'].values,
-        as1_hi['beta'].values,
-        ap1_hi['beta'].values,
-        an2_hi['beta'].values,
-        an1_hi['beta'].values,
-        ak2_hi['beta'].values,
-        ak1_hi['beta'].values
-    ]
-
-    # Mitochondrial beta values for Sample B
-    b_chrm = [
-        bs2_lo['beta'].values,
-        bs1_lo['beta'].values,
-        bn2_lo['beta'].values,
-        bn1_lo['beta'].values,
-        bs2_hi['beta'].values,
-        bs1_hi['beta'].values,
-        bp1_hi['beta'].values,
-        bn2_hi['beta'].values,
-        bn1_hi['beta'].values,
-        bk2_hi['beta'].values,
-        bk1_hi['beta'].values
-    ]
-
-    create_plot(
-        a_chrm,
-        'Mitochondrial Methylation: Sample A',
-        'Methylation Level',
-        '',
-        names,
-        'a_chrM_control.pdf'
+    # Mitochondrial beta values
+    chrm = pd.concat(
+        [ak1_hi,
+         ak2_hi,
+         bk1_hi,
+         bk2_hi,
+         an1_hi,
+         an2_hi,
+         bn1_hi,
+         bn2_hi,
+         ap1_hi,
+         bp1_hi,
+         as1_hi,
+         as2_hi,
+         bs1_hi,
+         bs2_hi,
+         an1_lo,
+         an2_lo,
+         bn1_lo,
+         bn2_lo,
+         as1_lo,
+         as2_lo,
+         bs1_lo,
+         bs2_lo]
     )
 
     create_plot(
-        b_chrm,
-        'Mitochondrial Methylation: Sample B',
+        chrm,
+        'Mitochondrial Methylation',
         'Methylation Level',
         '',
-        names,
-        'b_chrM_control.pdf'
+        'chrM_control.pdf'
     )
 
 if __name__ == '__main__':

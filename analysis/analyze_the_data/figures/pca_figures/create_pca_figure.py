@@ -91,6 +91,70 @@ def make_plot(data, var, keys, cols, title, xlab, ylab, figname):
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
 
+def make_combined_plot(data, title, xlab, ylab, figname):
+    """Create plot for principal components of PCA with all variables shown.
+
+    Inputs -
+        data    - DataFrame with columns pc1, pc2, kit, sample, and replicate
+        title   - title of figure
+        xlab    - x-axis label
+        ylab    - y-axis label
+        figname - name of output file
+    Returns -
+        Nothing, plot is saved to disk
+    """
+    keys = {
+         1: ('A', '1', 'Kapa'),   2: ('A', '2', 'Kapa'),
+         3: ('B', '1', 'Kapa'),   4: ('B', '2', 'Kapa'),
+         5: ('A', '1', 'NEB'),    6: ('A', '2', 'NEB'),
+         7: ('B', '1', 'NEB'),    8: ('B', '2', 'NEB'),
+         9: ('A', '1', 'PBAT'),  10: ('B', '1', 'PBAT'),
+        11: ('A', '1', 'Swift'), 12: ('A', '2', 'Swift'),
+        13: ('B', '1', 'Swift'), 14: ('B', '2', 'Swift'),
+    }
+    cols = {
+         1: ('o', 'none', '#D81B60'),  2: ('o', '#D81B60', '#D81B60'),
+         3: ('s', 'none', '#D81B60'),  4: ('s', '#D81B60', '#D81B60'),
+         5: ('o', 'none', '#1E88E5'),  6: ('o', '#1E88E5', '#1E88E5'),
+         7: ('s', 'none', '#1E88E5'),  8: ('s', '#1E88E5', '#1E88E5'),
+         9: ('o', 'none', '#A0522D'), 10: ('s', 'none'   , '#A0522D'),
+        11: ('o', 'none', '#004D40'), 12: ('o', '#004D40', '#004D40'),
+        13: ('s', 'none', '#004D40'), 14: ('s', '#004D40', '#004D40'),
+    }
+    fig, ax = plt.subplots(figsize=(5,5))
+    plt.tight_layout()
+
+    # Create legend
+    plt.plot(-300, 300, 'o', color='black', markersize=8, label='Samp. A')
+    plt.plot(-300, 300, 's', color='black', markersize=8, label='Samp. B')
+    plt.plot(-300, 300, 'D', color='black', fillstyle='none', markersize=8, label='Rep. 1')
+    plt.plot(-300, 300, 'D', color='black', markersize=8, label='Rep. 2')
+    plt.plot(-300, 300, 'D', color='#D81B60', markersize=8, label='Kapa')
+    plt.plot(-300, 300, 'D', color='#1E88E5', markersize=8, label='NEB')
+    plt.plot(-300, 300, 'D', color='#A0522D', markersize=8, label='PBAT')
+    plt.plot(-300, 300, 'D', color='#004D40', markersize=8, label='Swift')
+
+    # Add scatter plot to figure for each set of data in keys
+    for key, col in zip(keys.values(), cols.values()):
+        to_keep = (data['sample'] == key[0]) & (data['replicate'] == key[1]) & (data['kit'] == key[2])
+        if True not in list(to_keep):
+            continue
+        
+        ax.scatter(data.loc[to_keep, 'pc1'], data.loc[to_keep, 'pc2'],
+                    marker=col[0], facecolors=col[1], edgecolors=col[2], s=25)
+
+    ax.legend(ncol=4, bbox_to_anchor=(0.5, 1), frameon=False,
+              loc='lower center', fontsize='large')
+    plt.xlim(-250, 250)
+    plt.ylim(-175, 175)
+
+    plt.title(title, pad=50, fontsize=18)
+    plt.xlabel(xlab, fontsize=16)
+    plt.ylabel(ylab, fontsize=16)
+
+    plt.savefig(figname, bbox_inches='tight')
+    plt.close('all')
+
 def main():
     """Do the bulk of the PCA generation."""
     dirloc = '../../subsampling/'
@@ -170,6 +234,14 @@ def main():
         'Principal Component 1',
         'Principal Component 2',
         'pca_replicate.pdf'
+    )
+
+    make_combined_plot(
+        pcs,
+        '2-component PCA',
+        'Principal Component 1',
+        'Principal Component 2',
+        'pca_combined.pdf'
     )
 
 if __name__ == '__main__':

@@ -1,5 +1,8 @@
 import matplotlib
+import functools
 import argparse
+import seaborn
+import sklearn
 import pandas
 import scipy
 import numpy
@@ -10,7 +13,10 @@ import sys
 import Bio
 
 print('matplotlib version: ', matplotlib.__version__)
+#print('functools  version: ', functools.__version__)
 print('argparse   version: ', argparse.__version__)
+print('seaborn    version: ', seaborn.__version__)
+print('sklearn    version: ', sklearn.__version__)
 print('pandas     version: ', pandas.__version__)
 print('numpy      version: ', numpy.__version__)
 print('scipy      version: ', scipy.__version__)
