@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from scipy.special import logit
 from functools import reduce
 
 KIT = {
@@ -176,10 +177,18 @@ def main():
     ]
     dfs = []
     for samp in samps:
-        cols = ['chr', 'start', 'end', samp]
+        cols = ['chr', 'start', 'end', 'beta']
 
         df = pd.read_csv(dirloc+samp+filtag, sep='\t', names=cols, na_values='.')
-        dfs.append(df)
+
+        # Transform beta values into m-values uses logit transform
+        # Makes beta distribution of values into a more gaussian distribution
+        df[samp] = logit(list(df['beta']))
+
+        # logit(1) = infinity, logit(0) = -infinity
+        # Set these to arbitrarily high values for calculation purposes
+        df.replace([np.inf, -np.inf], [10, -10], inplace=True)
+        dfs.append(df.drop(['beta'], axis=1))
 
     df_na = reduce(lambda x, y: pd.merge(x, y, on=['chr', 'start', 'end']), dfs)
     df_al = df_na.dropna(axis=0, how='any')
