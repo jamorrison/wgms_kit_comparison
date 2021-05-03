@@ -52,6 +52,28 @@ REP = {
     'FtubeBswift10ng'    : '1', 'FtubeBswift10ngRep2': '2'
 }
 
+def beta_to_m(betas, covgs, k):
+    """Transform beta values into m values.
+
+    Inputs -
+        betas - pd.Series of beta values
+        covgs - pd.Series of covg values
+        k     - number of pseudoreads for smoothing
+    Returns
+        pd.Series of m values
+    """
+    b = list(betas)
+    c = list(covgs)
+
+    s = []
+    for i in range(len(c)):
+        m = (c[i] * b[i])
+        u = (c[i] - m)
+        s.append((m+k) / ((m+k) + (u+k)))
+    out = logit(s)
+
+    return pd.Series(out)
+
 def make_plot(data, var, keys, cols, title, xlab, ylab, figname):
     """Create plot for principal components of PCA.
 
@@ -177,18 +199,14 @@ def main():
     ]
     dfs = []
     for samp in samps:
-        cols = ['chr', 'start', 'end', 'beta']
+        cols = ['chr', 'start', 'end', 'beta', 'covg']
 
         df = pd.read_csv(dirloc+samp+filtag, sep='\t', names=cols, na_values='.')
 
         # Transform beta values into m-values uses logit transform
         # Makes beta distribution of values into a more gaussian distribution
-        df[samp] = logit(list(df['beta']))
-
-        # logit(1) = infinity, logit(0) = -infinity
-        # Set these to arbitrarily high values for calculation purposes
-        df.replace([np.inf, -np.inf], [10, -10], inplace=True)
-        dfs.append(df.drop(['beta'], axis=1))
+        df[samp] = beta_to_m(df['beta'], df['covg'], 0.1)
+        dfs.append(df.drop(['beta', 'covg'], axis=1))
 
     df_na = reduce(lambda x, y: pd.merge(x, y, on=['chr', 'start', 'end']), dfs)
     df_al = df_na.dropna(axis=0, how='any')

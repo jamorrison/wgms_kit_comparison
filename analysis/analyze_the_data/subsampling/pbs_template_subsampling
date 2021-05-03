@@ -56,7 +56,7 @@ gzip > QQQ.subsampled.c.context.sorted.bed.gz
 bedtools map \
     -a ${DIRLOC}/../../qc_assets/100kb_hg38_windows.bed \
     -b QQQ.subsampled.cg.sorted.mergecg.bed.gz \
-    -c 4 -o mean |
+    -c 4,5 -o mean |
 gzip > QQQ.subsampled.cg.sorted.mergecg.100kb_meth_avg.bed.gz
 
 # Launch qc

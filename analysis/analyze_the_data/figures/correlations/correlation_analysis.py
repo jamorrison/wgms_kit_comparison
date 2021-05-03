@@ -118,7 +118,7 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
 
 def main():
     """Do the bulk of the correlations analysis."""
-    col_names = ['chr', 'start', 'end', 'beta_avg']
+    col_names = ['chr', 'start', 'end', 'beta_avg', 'covg_avg']
 
     dirloc = '../../subsampling/'
     filtag = '.subsampled.cg.sorted.mergecg.100kb_meth_avg.bed.gz'
