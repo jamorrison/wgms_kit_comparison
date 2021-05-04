@@ -20,12 +20,14 @@ below.
   - Python 3 (works with version 3.7.6)
   - GNU parallel (works with version 20200522)
   - Python modules
-    - matplotlib : version 3.1.3
-    - biopython  : version 1.76
-    - argparse   : version 1.1
-    - pandas     : version 1.0.1
-    - numpy      : version 1.18.1
-    - scipy      : version 1.4.1
+    - matplotlib version:  3.3.3
+    - biopython  version:  1.78
+    - argparse   version:  1.1
+    - seaborn    version:  0.11.1
+    - sklearn    version:  0.24.0
+    - pandas     version:  1.2.0
+    - numpy      version:  1.18.5
+    - scipy      version:  1.5.3
 
 ## QC Asset Preparation
 
@@ -38,6 +40,7 @@ bash make_canonical_chr_bed.sh
 bash make_windows.sh
 bash create_genic_intergenic_regions.sh
 bash create_bedtools_intersect_bismap_files.sh
+bash create_cpg_seascape_bed.sh
 ```
 For these scripts to work, you'll need to run `samtools faidx` on your reference
 genome and download the
@@ -103,13 +106,24 @@ cd pbs_preseq
 bash submit_pbs_scripts.sh
 ```
 
-### CpG coverage
+### CpG Coverage
 
 To generate data about coverage of CpGs in different genomic regions, run
 ```
 cd analysis
 bash create_pbs_scripts_cpg_covg.sh
 cd pbs_cpg_covg
+bash submit_pbs_scripts.sh
+```
+
+### Methylation Extraction from Methylation Controls
+
+To generate BED files containing CpG beta values from the methylation controls 
+(lambdaphage and pUC19), run
+```
+cd analysis
+bash create_pbs_scripts_control_vectors.sh
+cd pbs_control_vectors
 bash submit_pbs_scripts.sh
 ```
 
@@ -141,6 +155,16 @@ cd pbs_mappability
 bash submit_pbs_scripts.sh
 ```
 
+### CAH/CAG/CTH/CTG Trinucleotide Methylation
+
+To extract methylation for CAH/CAG/CTH/CTG trinucleotide contexts, run
+```
+cd cpg_questions/trinuc_methylation
+python trinuc_methylation.py
+```
+CCH/CCG/CGH/CGG are not included in this code, but could be easily added in a 
+similar manner to how the current contexts have been implemented.
+
 ### Data Collection
 
 To collect data that will be used when generating figures and tables, run
@@ -150,7 +174,7 @@ python collect_data.py
 ```
 
 ### Figure Generation
-#### Statistical Metrics (including Observed/Expected Ratio)
+#### Statistical Metrics (including Observed/Expected Ratio and Trinucleotide Methylation)
 
 To generate the metric plots found in the results section, run
 ```
@@ -166,10 +190,38 @@ cd figures/correlations
 python correlation_analysis.py
 ```
 
+#### PCA (both Analysis and Figure)
+
+To run the PCA and generate the figure, run
+```
+cd figures/pca_figures
+python create_pca_figure.py
+```
+
 #### NEB Kit Methylation Bias
 
 To generate the methylation bias plots found in the results section, run
 ```
 cd cpg_questions/methylation_bias
 python meth_bias_analysis.py
+```
+
+#### Methylation Control Plots
+
+To generate lambdaphage, pUC19, and mtDNA methylation violin plots, run
+```
+cd cpg_questions/control_methylation
+python control_vectors_qc.py
+```
+
+#### CpG Distributions for Different Regions (All, Islands, Shores, Shelves, and Open Seas)
+
+To generate the BED files required for running this code, run
+```
+cd cpg_questions/cpg_methylation_distributions
+bash make_bedfiles.sh
+```
+To create the violin plots for these different regions, run
+```
+python make_plots.py
 ```
