@@ -254,16 +254,16 @@ def lambda_puc_plots():
 
     create_plot(
         lamb,
-        'Lambdaphage Control Methylation',
-        'Methylation Level',
+        'Lambda Phage Control Conversion',
+        'Percent Converted',
         '',
         'lamb_control.pdf'
     )
 
     create_plot(
         puck,
-        'pUC19 Control Methylation',
-        'Methylation Level',
+        'pUC19 Control Conversion',
+        'Percent Converted',
         '',
         'puck_control.pdf'
     )
@@ -327,8 +327,8 @@ def mitochondria_plots():
 
     create_plot(
         chrm,
-        'Mitochondrial Methylation',
-        'Methylation Level',
+        'Mitochondrial Conversion',
+        'Percent Converted',
         '',
         'chrM_control.pdf'
     )
