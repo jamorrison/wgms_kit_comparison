@@ -125,16 +125,16 @@ def create_plot_matplotlib(data, title, xlab, ylab, ynames, figname):
         pc.set_edgecolor(COLOR[idx])
         pc.set_alpha(1)
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.xticks(
         [i for i in np.arange(0, 1.2, 0.2)],
         ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)],
-        fontsize=12
+        fontsize=18
     )
-    plt.yticks([i for i in np.arange(1,len(ynames)+1)], ynames, fontsize=12)
+    plt.yticks([i for i in np.arange(1,len(ynames)+1)], ynames, fontsize=18)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -158,13 +158,20 @@ def create_plot(data, title, xlab, ylab, figname):
                    split=True, inner='quartile', linewidth=1, orient='h',
                    palette={'Rep. 1': '#005596', 'Rep. 2': '#3fa294'})
 
-    ax.legend(title='', ncol=2, bbox_to_anchor=(0.5,1), frameon=False,
-              loc='lower center', fontsize='large')
+    ax.legend(title='', ncol=2, bbox_to_anchor=(0.5,0.96), frameon=False,
+              loc='lower center', fontsize=20)
     plt.xlim(-0.05, 1.05)
 
-    plt.title(title, pad=40, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.xticks(
+        [i for i in np.arange(0, 1.2, 0.2)],
+        ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)],
+        fontsize=18
+    )
+    plt.yticks(fontsize=18)
+
+    plt.title(title, pad=40, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -254,16 +261,16 @@ def lambda_puc_plots():
 
     create_plot(
         lamb,
-        'Lambda Phage Control Conversion',
-        'Percent Converted',
+        'Lambda Phage Control Retention',
+        'Percent Retained',
         '',
         'lamb_control.pdf'
     )
 
     create_plot(
         puck,
-        'pUC19 Control Conversion',
-        'Percent Converted',
+        'pUC19 Control Retention',
+        'Percent Retained',
         '',
         'puck_control.pdf'
     )
@@ -327,8 +334,8 @@ def mitochondria_plots():
 
     create_plot(
         chrm,
-        'Mitochondrial Conversion',
-        'Percent Converted',
+        'Mitochondrial Retention',
+        'Percent Retained',
         '',
         'chrM_control.pdf'
     )

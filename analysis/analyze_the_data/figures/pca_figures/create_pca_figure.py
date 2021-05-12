@@ -105,11 +105,16 @@ def make_plot(data, var, keys, cols, title, xlab, ylab, figname):
         ax.scatter(data.loc[to_keep, 'pc1'], data.loc[to_keep, 'pc2'],
                    c=col, s=25)
 
-    ax.legend(keys, loc='upper left')
+    ax.legend(keys, ncol=1, loc='upper right', fontsize=13)
+    plt.xlim(-250, 250)
+    plt.ylim(-175, 175)
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.xticks([i for i in np.arange(-200, 300, 100)], ['{:.0f}'.format(i) for i in np.arange(-200, 300, 100)], fontsize=14)
+    plt.yticks([i for i in np.arange(-150, 200,  50)], ['{:.0f}'.format(i) for i in np.arange(-150, 200,  50)], fontsize=14)
+
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -166,14 +171,17 @@ def make_combined_plot(data, title, xlab, ylab, figname):
         ax.scatter(data.loc[to_keep, 'pc1'], data.loc[to_keep, 'pc2'],
                     marker=col[0], facecolors=col[1], edgecolors=col[2], s=25)
 
-    ax.legend(ncol=4, bbox_to_anchor=(0.5, 1), frameon=False,
-              loc='lower center', fontsize='large')
+    ax.legend(ncol=4, bbox_to_anchor=(0.5, 0.98), frameon=False,
+              loc='lower center', fontsize=14)
     plt.xlim(-250, 250)
     plt.ylim(-175, 175)
 
-    plt.title(title, pad=50, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.xticks([i for i in np.arange(-200, 300, 100)], ['{:.0f}'.format(i) for i in np.arange(-200, 300, 100)], fontsize=14)
+    plt.yticks([i for i in np.arange(-150, 200,  50)], ['{:.0f}'.format(i) for i in np.arange(-150, 200,  50)], fontsize=14)
+
+    plt.title(title, pad=50, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')

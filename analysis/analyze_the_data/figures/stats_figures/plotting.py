@@ -29,23 +29,23 @@ def create_single_column_bar_chart(plot_data, title, xlab, ylab, xlims, figname)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
-    plt.yticks(ypos, nams, fontsize=12)
+    plt.yticks(ypos, nams, fontsize=18)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -82,23 +82,23 @@ def create_single_column_bar_chart_with_labels(plot_data, text_labels, tag, titl
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
-    plt.yticks(ypos, nams, fontsize=12)
+    plt.yticks(ypos, nams, fontsize=18)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -151,26 +151,26 @@ def create_double_column_bar_chart(plot_data_1, sample_1, plot_data_2, sample_2,
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    ax.legend(ncol=2, bbox_to_anchor=(0.0, 1.03), frameon=False,
-              loc='center', fontsize='large')
+    ax.legend(ncol=2, bbox_to_anchor=(0.0, 0.96), frameon=False,
+              loc='center', fontsize=20)
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
-    plt.yticks([i for i, _ in enumerate(nams)], nams, fontsize=12)
+    plt.yticks([i for i, _ in enumerate(nams)], nams, fontsize=18)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -219,12 +219,12 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
 
     nams = sorted(nams, key=lambda d: d[0], reverse=False)
 
-    ax.legend(ncol=3, bbox_to_anchor=(0.5, 1), frameon=False,
-              loc='lower center', fontsize='large')
+    ax.legend(ncol=3, bbox_to_anchor=(0.5, 0.96), frameon=False,
+              loc='lower center', fontsize=20)
 
-    plt.title(title, pad=40, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, pad=40, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
     plt.ylim(-1, len(nams))
@@ -233,18 +233,18 @@ def create_rep_avg_plot(plot_data, title, xlab, ylab, xlims, figname, add_line=F
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     plt.yticks(
         [tup[0] for tup in nams],
         [' '.join([constants.SAMPLE_KIT[tup[1]], 'Sample', constants.SAMPLE_GROUP[tup[1]]]) for tup in nams],
-        fontsize=12
+        fontsize=18
     )
 
     plt.savefig(figname, bbox_inches='tight')
@@ -284,28 +284,28 @@ def create_read_alignment_plot(plot_data, title, xlab, ylab, xlims, figname):
         ax.text(50, y, lab, ha='center', va='center',
                 color='white', fontsize='large')
 
-    ax.legend(ncol=len(cats), bbox_to_anchor=(0.5, 1), frameon=False,
-              loc='lower center', fontsize='large')
+    ax.legend(ncol=len(cats), bbox_to_anchor=(0.5, 0.96), frameon=False,
+              loc='lower center', fontsize=20)
 
     plt.xlim(xlims[0], xlims[1]+(0.5*xlims[2]))
 
-    plt.title(title, pad=40, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, pad=40, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
-    plt.yticks(ypos, nams, fontsize=12)
+    plt.yticks(ypos, nams, fontsize=18)
 
     plt.savefig(figname, bbox_inches='tight')
     plt.close('all')
@@ -336,38 +336,38 @@ def create_line_chart(plot_data, title, xlab, ylab, xlims, ylims, ncols, legend_
 
         plt.plot(x, y, stl, color=col, label=lab, markersize=3.5, markevery=every)
 
-    plt.title(title, fontsize=18)
-    plt.xlabel(xlab, fontsize=16)
-    plt.ylabel(ylab, fontsize=16)
+    plt.title(title, fontsize=24)
+    plt.xlabel(xlab, fontsize=20)
+    plt.ylabel(ylab, fontsize=20)
 
     plt.xlim(xlims[0]-(0.25*xlims[2]), xlims[1]+(0.25*xlims[2]))
     plt.ylim(ylims[0]-(0.25*ylims[2]), ylims[1]+(0.25*ylims[2]))
 
-    ax.legend(ncol=ncols, loc=legend_loc, fontsize='large')
+    ax.legend(ncol=ncols, loc=legend_loc, fontsize=13)
 
     if not (isinstance(xlims[2], int)):
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             ['{:.1f}'.format(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.xticks(
             [i for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
             [str(i) for i in np.arange(xlims[0], xlims[1]+xlims[2], xlims[2])],
-            fontsize=12
+            fontsize=18
         )
     if not (isinstance(ylims[2], int)):
         plt.yticks(
             [i for i in np.arange(ylims[0], ylims[1]+ylims[2], ylims[2])],
             ['{:.1f}'.format(i) for i in np.arange(ylims[0], ylims[1]+ylims[2], ylims[2])],
-            fontsize=12
+            fontsize=18
         )
     else:
         plt.yticks(
             [i for i in np.arange(ylims[0], ylims[1]+ylims[2], ylims[2])],
             [str(i) for i in np.arange(ylims[0], ylims[1]+ylims[2], ylims[2])],
-            fontsize=12
+            fontsize=18
         )
 
 

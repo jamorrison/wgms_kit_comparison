@@ -23,15 +23,10 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
     # Create arrays with NaN values removed
     xs = []
     ys = []
-    #x_out = []
-    #y_out = []
     for i in range(len(x_vals)):
         if not np.isnan(x_vals[i]) and not np.isnan(y_vals[i]):
             xs.append(x_vals[i])
             ys.append(y_vals[i])
-            #if abs(x_vals[i] - y_vals[i]) > 0.3:
-            #    x_out.append(x_vals[i])
-            #    y_out.append(y_vals[i])
     xs = np.array(xs)
     ys = np.array(ys)
 
@@ -62,16 +57,14 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
 
         plt.text(
             0.5, 1.075, r'# Bins = {:,} ; $r_s$ = {:.3f}'.format(n_cpgs, coef),
-            ha='center', va='center', size='x-large'
+            ha='center', va='center', size=16
         )
-
-        #plt.plot(x_out, y_out, 'xr', markersize=5)
 
         plt.xlim(-0.05, 1.05)
         plt.ylim(-0.05, 1.15)
 
-        plt.xticks([i for i in np.arange(0, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)], fontsize=16)
-        plt.yticks([i for i in np.arange(0, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)], fontsize=16)
+        plt.xticks([i for i in np.arange(0, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)], fontsize=18)
+        plt.yticks([i for i in np.arange(0, 1.2, 0.2)], ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)], fontsize=18)
 
         plt.title(title, fontsize=24)
         plt.xlabel(xlab, fontsize=20)
@@ -92,7 +85,7 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
                               color='blue', label=ylab, alpha=0.5)
                               #color='#3fa294', label=ylab, alpha=0.5)
 
-        ax.legend(ncol=2, loc='upper left')
+        ax.legend(ncol=1, loc='upper left', fontsize=20)
 
         plt.title(title, fontsize=24)
         plt.xlabel('Methylation Level', fontsize=20)
@@ -103,12 +96,12 @@ def find_correlation_and_plot(x_vals, y_vals, title, xlab, ylab, figname, print_
         plt.xticks(
             [i for i in np.arange(0, 1.2, 0.2)],
             ['{:.1f}'.format(i) for i in np.arange(0, 1.2, 0.2)],
-            fontsize=16
+            fontsize=18
         )
         plt.yticks(
             [i for i in np.arange(0, 1.05*max(max(n1),max(n2)), 1)],
             ['{:.1f}'.format(i) for i in np.arange(0, 1.05*max(max(n1),max(n2)), 1)],
-            fontsize=16
+            fontsize=18
         )
 
         plt.savefig('hist_'+figname, bbox_inches='tight')

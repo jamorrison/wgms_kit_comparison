@@ -771,8 +771,8 @@ def create_complexity_curve_plots(data, outdir):
     plotting.create_line_chart(
         [(samp, np.array(x)/1000000., np.array(y)/1000000.) for samp, x, y in A],
         'Library Complexity: Sample A',
-        'Total Number of Reads (Millions)',
-        'Number of Unique Reads (Millions)',
+        'Total Reads (Millions)',
+        'Unique Reads (Millions)',
         (0, 600, 100),
         (0, 500, 100),
         2,
@@ -783,8 +783,8 @@ def create_complexity_curve_plots(data, outdir):
     plotting.create_line_chart(
         [(samp, np.array(x)/1000000., np.array(y)/1000000.) for samp, x, y in B],
         'Library Complexity: Sample B',
-        'Total Number of Reads (Millions)',
-        'Number of Unique Reads (Millions)',
+        'Total Reads (Millions)',
+        'Unique Reads (Millions)',
         (0, 900, 100),
         (0, 600, 100),
         2,
