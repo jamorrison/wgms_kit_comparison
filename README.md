@@ -1,11 +1,18 @@
 # Analysis Code For WGMS Kit Comparison
 
 The results and conclusions for this analysis can be found in the paper titled,
-"Reasonable Title about Comparison of WGMS Library Preparation Kits," which can
-be found online at (manuscript in progress).
+"Evaluation of whole-genome DNA methylation sequencing library preparation
+protocols," which can be found online at
+[Morrison et al., Epigenetics & Chromatin, 2021](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/s13072-021-00401-y).
 
 A brief description of how to use the code used during the analysis can be found
 below.
+
+## Reference
+
+Morrison, J., Koeman, J.M., Johnson, B.K. et al. Evaluation of whole-genome DNA
+methylation sequencing library preparation protocols. Epigenetics & Chromatin
+14, 28 (2021). https://doi.org/10.1186/s13072-021-00401-y
 
 ## Requirements
 
